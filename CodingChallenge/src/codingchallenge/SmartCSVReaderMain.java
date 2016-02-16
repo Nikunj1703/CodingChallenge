@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +41,32 @@ public class SmartCSVReaderMain {
         }
     }
     
+    
+    public String[] findCSVHeaderInformation(String CSVFile){
+        BufferedReader br = null;
+        StringBuilder header = new StringBuilder();
+        File file = new File(CSVFile);
+        try {
+            br = new BufferedReader (new FileReader(file));
+            try {
+                 header.append(br.readLine().toString());
+            } catch (IOException ex) {
+                Logger.getLogger(SmartCSVReaderMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SmartCSVReaderMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String tempHeader[] = header.toString().split(",");
+        int i = 0;
+        for(String s : tempHeader){
+            s = s.trim();
+            tempHeader[i] = s;
+            i++;
+        }
+        return tempHeader;
+    }
+    
+     
     public boolean determineCSVTypeByHeader(String CSVFile){
         BufferedReader br = null;
         StringBuilder header = new StringBuilder();
@@ -54,11 +82,8 @@ public class SmartCSVReaderMain {
             Logger.getLogger(SmartCSVReaderMain.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        if(header.toString().contains("user_id")){
-            System.out.println(header.toString());
+        if(header.toString().contains("user_id"))
             return true;
-        }
-        System.out.println(header.toString());   
         return false;
     }
     
