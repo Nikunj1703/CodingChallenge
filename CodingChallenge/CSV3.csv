@@ -1,0 +1,6 @@
+state, user_id, user_name, course_id
+active, 4, "Jon Doe", 2
+active, 1, "Tom William", 3
+deleted, 2, "Jim Rogers", 3
+deleted, 3, "Justin Tibor", 4
+active, 5, "Merry Ann", 2

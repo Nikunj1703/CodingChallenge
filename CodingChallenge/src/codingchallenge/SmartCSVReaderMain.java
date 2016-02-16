@@ -79,7 +79,7 @@ public class SmartCSVReaderMain {
         int numOfRecords = 0;
         FileReader fileReader = null;
         CSVParser csvFileParser = null;
-        
+        boolean isDataInCSVValid = false;
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER);
         
         try {
@@ -93,13 +93,16 @@ public class SmartCSVReaderMain {
                 if(isCSVValidFormat){
                     HashMap<String, Student> studentTempHash = (HashMap<String, Student>) recordHash;
                     for (int i = 1; i < studentCsvRecords.size(); i++) {
-                        CSVRecord record = (CSVRecord) studentCsvRecords.get(i);
-                        storeInStudentHashMap(new Student(record.get(USER_ID).toString(),
-                                                        record.get(USER_NAME).toString(),
-                                                        record.get(COURSE_ID).toString(),
-                                                        record.get(STATE).toString()), 
-                                                        studentTempHash);
-                        numOfRecords++;
+                        isDataInCSVValid = checkFormatOfDataInCSV((CSVRecord) studentCsvRecords.get(i), isStudentCSV);
+                        if(isDataInCSVValid){
+                            CSVRecord record = (CSVRecord) studentCsvRecords.get(i);
+                            storeInStudentHashMap(new Student(record.get(USER_ID).toString(),
+                                                            record.get(USER_NAME).toString(),
+                                                            record.get(COURSE_ID).toString(),
+                                                            record.get(STATE).toString()), 
+                                                            studentTempHash);
+                            numOfRecords++;
+                        }
                     }
                 }
             }else{   //If Course CSV then check format and built the Course HashMap
@@ -110,13 +113,16 @@ public class SmartCSVReaderMain {
                 if(isCSVValidFormat){
                     HashMap<String, Course> courseTempHash = (HashMap<String, Course>) recordHash;
                     for (int i = 1; i < courseCsvRecords.size(); i++) {
-                        CSVRecord record = (CSVRecord) courseCsvRecords.get(i);
-                        storeInCourseHashMap(new Course(record.get(COURSE_ID).toString(),
-                                                        record.get(COURSE_NAME).toString(),
-                                                        record.get(STATE).toString()), 
-                                                        courseTempHash);
-                        numOfRecords++;
-                    }
+                        isDataInCSVValid = checkFormatOfDataInCSV((CSVRecord) courseCsvRecords.get(i), isStudentCSV);
+                        if(isDataInCSVValid){
+                            CSVRecord record = (CSVRecord) courseCsvRecords.get(i);
+                            storeInCourseHashMap(new Course(record.get(COURSE_ID).toString(),
+                                                            record.get(COURSE_NAME).toString(),
+                                                            record.get(STATE).toString()), 
+                                                            courseTempHash);
+                            numOfRecords++;
+                        }
+                   }
                 }
             }
         } catch (FileNotFoundException ex) {
@@ -126,7 +132,28 @@ public class SmartCSVReaderMain {
         }  
         return numOfRecords;
     }
+      
        
+    /**
+     * This method checks if the data inside the CSV is in Valid format. For example, it tracks if
+     * user_id or course_id is invalid
+     * @param record
+     * @param isStudentCSV
+     * @return 
+     */
+       public boolean checkFormatOfDataInCSV(CSVRecord record, boolean isStudentCSV){
+        try{
+            if(isStudentCSV){
+                int user_id = Integer.parseInt(record.get("user_id").toString().trim());
+                int course_id = Integer.parseInt(record.get("course_id").toString().trim());
+            }else{
+                int course_id = Integer.parseInt(record.get("course_id").toString().trim());
+            }
+            return true;
+        }catch(NumberFormatException ex){
+            return false;
+        } 
+    }
     
     /**
      * This method checks if the Student CSV or Course CSV is in correct format
@@ -244,9 +271,10 @@ public class SmartCSVReaderMain {
     /**
      * This method list Active Students who are registered in Active Course
      * @param student
-     * @param course 
+     * @param course
+     * @return 
      */
-    public void determineActiveStudentsInActiveCourse(HashMap<String, Student> student, HashMap<String, Course> course){
+    public int determineActiveStudentsInActiveCourse(HashMap<String, Student> student, HashMap<String, Course> course){
         int finalRecordCount = 0;
          for(String courseKey: course.keySet()){
              if(course.get(courseKey).getState().trim().toString().equals("active")){
@@ -258,6 +286,7 @@ public class SmartCSVReaderMain {
                  }
              }
          }
+         return finalRecordCount;
     }
     
     
