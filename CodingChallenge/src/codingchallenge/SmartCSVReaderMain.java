@@ -53,6 +53,8 @@ public class SmartCSVReaderMain {
         //New record gets added and existing record is updated
         myMainClassObj.readCSV(studentCSVFile, true, studentHash);
         myMainClassObj.readCSV(courseCSVFile, false, courseHash);
+        
+        myMainClassObj.determineActiveStudentsInActiveCourse(studentHash,courseHash);
     }
     
     
@@ -121,17 +123,51 @@ public class SmartCSVReaderMain {
         }        
     }
        
-       
-   
-    
-    
-    
-    
-    
-    
-    
     
     /**
+     * This method checks if the Student CSV or Course CSV is in correct format
+     * @param header
+     * @param isStudentCSV
+     * @return 
+     */
+    private boolean csvFormatChecker(CSVRecord header, boolean isStudentCSV) {
+        if(isStudentCSV){
+            if(header.get("user_id").toString().trim().equals("user_id") &&
+                    header.get("user_name").toString().trim().equals("user_name") &&
+                    header.get("course_id").toString().trim().equals("course_id") &&
+                    header.get("state").toString().trim().equals("state")){
+                if(header.size() == 4)
+                    return true;
+            }
+        }else{
+            if(header.get("course_id").toString().trim().equals("course_id") &&
+                    header.get("course_name").toString().trim().equals("course_name") &&
+                    header.get("state").toString().trim().equals("state")){
+                if(header.size() == 3)
+                    return true;
+            }
+        }
+        System.out.println("Incorrect format of CSV file");
+        return false;
+    }
+
+    private void storeInStudentHashMap(Student student, HashMap<String, Student> recordHash) {
+        if(!recordHash.containsKey(student.getUser_id())){
+            recordHash.put(student.getUser_id(), student);
+        }
+        else
+            recordHash.replace(student.getUser_id(), student);
+    }
+
+    private void storeInCourseHashMap(Course course, HashMap<String, Course> recordHash) {
+        if(!recordHash.containsKey(course.getCourse_id())){
+            recordHash.put(course.getCourse_id(), course);
+        }
+        else
+            recordHash.replace(course.getCourse_id(), course); 
+    }
+    
+        /**
      * This method returns the header of CSV so that it can be used further to parse CSV
      * This method also handles the situation if any CSV with jumbled column order is given as input
      * @param CSVFile
@@ -185,42 +221,21 @@ public class SmartCSVReaderMain {
             return true;
         return false;
     }
-
-    private boolean csvFormatChecker(CSVRecord header, boolean isStudentCSV) {
-        if(isStudentCSV){
-            if(header.get("user_id").toString().trim().equals("user_id") &&
-                    header.get("user_name").toString().trim().equals("user_name") &&
-                    header.get("course_id").toString().trim().equals("course_id") &&
-                    header.get("state").toString().trim().equals("state")){
-                if(header.size() == 4)
-                    return true;
-            }
-        }else{
-            if(header.get("course_id").toString().trim().equals("course_id") &&
-                    header.get("course_name").toString().trim().equals("course_name") &&
-                    header.get("state").toString().trim().equals("state")){
-                if(header.size() == 3)
-                    return true;
-            }
-        }
-        System.out.println("Incorrect format of CSV file");
-        return false;
+    
+    public void determineActiveStudentsInActiveCourse(HashMap<String, Student> student, HashMap<String, Course> course){
+        int finalRecordCount = 0;
+         for(String courseKey: course.keySet()){
+             if(course.get(courseKey).getState().trim().toString().equals("active")){
+                 for(String studentKey: student.keySet()){
+                     if(student.get(studentKey).getState().trim().toString().equals("active") && student.get(studentKey).getCourse_id().trim().toString().equals(course.get(courseKey).getCourse_id().toString())){
+                        System.out.println("Active Course: "+course.get(courseKey).getCourse_name()+" || Name of Active Student: "+student.get(studentKey).getUser_name());
+                        finalRecordCount++;      
+                     }
+                 }
+             }
+         }
     }
-
-    private void storeInStudentHashMap(Student student, HashMap<String, Student> recordHash) {
-        if(!recordHash.containsKey(student.getUser_id())){
-            recordHash.put(student.getUser_id(), student);
-        }
-        else
-            recordHash.replace(student.getUser_id(), student);
-    }
-
-    private void storeInCourseHashMap(Course course, HashMap<String, Course> recordHash) {
-        if(!recordHash.containsKey(course.getCourse_id())){
-            recordHash.put(course.getCourse_id(), course);
-        }
-        else
-            recordHash.replace(course.getCourse_id(), course); 
-    }
+    
+    
     
 }
