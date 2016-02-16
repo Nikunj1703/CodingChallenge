@@ -46,7 +46,7 @@ public class SmartCSVReaderJUnitTest {
         when(temp.storeInStudentHashMap(new Student("","","",""), new HashMap<String, Student>())).thenReturn(0);
         when(temp.csvFormatChecker(null, true)).thenReturn(true);
         
-        int expectedResult = 6;
+        int expectedResult = 7;
         int actualResult = projectMain.readCSV(myFile, isStudentCSV, new HashMap<String, Student>());
         
         assertEquals("Unit Test: Number of Records read in Student CSV File", expectedResult, actualResult);
