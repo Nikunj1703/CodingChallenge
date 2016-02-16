@@ -151,6 +151,11 @@ public class SmartCSVReaderMain {
         return false;
     }
 
+    /**
+     * This method Store Student Object in HashMap. user_id is Key and Student Object is Value
+     * @param student
+     * @param recordHash 
+     */
     private void storeInStudentHashMap(Student student, HashMap<String, Student> recordHash) {
         if(!recordHash.containsKey(student.getUser_id())){
             recordHash.put(student.getUser_id(), student);
@@ -159,6 +164,11 @@ public class SmartCSVReaderMain {
             recordHash.replace(student.getUser_id(), student);
     }
 
+    /**
+     * * This method Store Course Object in HashMap. course_id is Key and Course Object is Value
+     * @param course
+     * @param recordHash 
+     */
     private void storeInCourseHashMap(Course course, HashMap<String, Course> recordHash) {
         if(!recordHash.containsKey(course.getCourse_id())){
             recordHash.put(course.getCourse_id(), course);
@@ -222,6 +232,12 @@ public class SmartCSVReaderMain {
         return false;
     }
     
+    
+    /**
+     * This method list Active Students who are registered in Active Course
+     * @param student
+     * @param course 
+     */
     public void determineActiveStudentsInActiveCourse(HashMap<String, Student> student, HashMap<String, Course> course){
         int finalRecordCount = 0;
          for(String courseKey: course.keySet()){
