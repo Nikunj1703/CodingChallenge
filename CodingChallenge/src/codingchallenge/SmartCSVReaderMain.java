@@ -119,7 +119,7 @@ public class SmartCSVReaderMain {
         } catch (IOException ex) {
             Logger.getLogger(SmartCSVReaderMain.class.getName()).log(Level.SEVERE, null, ex);
         }        
-       }
+    }
        
        
    
@@ -186,17 +186,41 @@ public class SmartCSVReaderMain {
         return false;
     }
 
-    private boolean csvFormatChecker(CSVRecord csvRecord, boolean studentCSV) {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        return true;
+    private boolean csvFormatChecker(CSVRecord header, boolean isStudentCSV) {
+        if(isStudentCSV){
+            if(header.get("user_id").toString().trim().equals("user_id") &&
+                    header.get("user_name").toString().trim().equals("user_name") &&
+                    header.get("course_id").toString().trim().equals("course_id") &&
+                    header.get("state").toString().trim().equals("state")){
+                if(header.size() == 4)
+                    return true;
+            }
+        }else{
+            if(header.get("course_id").toString().trim().equals("course_id") &&
+                    header.get("course_name").toString().trim().equals("course_name") &&
+                    header.get("state").toString().trim().equals("state")){
+                if(header.size() == 3)
+                    return true;
+            }
+        }
+        System.out.println("Incorrect format of CSV file");
+        return false;
     }
 
-    private void storeInStudentHashMap(Student student, HashMap<String, Student> studentTempHash) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void storeInStudentHashMap(Student student, HashMap<String, Student> recordHash) {
+        if(!recordHash.containsKey(student.getUser_id())){
+            recordHash.put(student.getUser_id(), student);
+        }
+        else
+            recordHash.replace(student.getUser_id(), student);
     }
 
-    private void storeInCourseHashMap(Course course, HashMap<String, Course> courseTempHash) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void storeInCourseHashMap(Course course, HashMap<String, Course> recordHash) {
+        if(!recordHash.containsKey(course.getCourse_id())){
+            recordHash.put(course.getCourse_id(), course);
+        }
+        else
+            recordHash.replace(course.getCourse_id(), course); 
     }
     
 }
