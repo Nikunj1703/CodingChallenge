@@ -219,6 +219,24 @@ public class SmartCSVReaderJUnitTest {
         assertEquals("Unit Test: To check if the format of Data in Student CSV is in correct format", expectedResult, actualResult);
     }
     
+    //Unit Test: To check if the format of Data in Student CSV is in correct format.
+    @Test
+    public void checkFormatOfCourseDataInStudentCSVTest() throws FileNotFoundException, IOException{
+        String myFile = "CSV1.csv";
+        boolean isStudentCSV = true;
+       
+        CSVFormat studentCsvFileFormat = CSVFormat.DEFAULT.withHeader("user_id", "user_name", "course_id", "state");
+        FileReader fileReader = new FileReader(myFile);
+        CSVParser csvFileParser = new CSVParser(fileReader, studentCsvFileFormat);
+        List studentCsvRecords = csvFileParser.getRecords(); 
+        SmartCSVReaderMain testProject = new SmartCSVReaderMain();
+
+        boolean expectedResult = false;
+        boolean actualResult = testProject.checkFormatOfDataInCSV((CSVRecord) studentCsvRecords.get(9), isStudentCSV);
+        assertEquals("Unit Test: To check if the format of Data in Student CSV is in correct format", expectedResult, actualResult);
+    }
+    
+    
     //Unit Test: To check if the format of Data in Student CSV is in incorrect format.
     @Test
     public void checkFormatOfDataInStudentCSVNegativeTest() throws FileNotFoundException, IOException{

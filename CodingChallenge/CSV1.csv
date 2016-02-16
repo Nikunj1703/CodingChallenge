@@ -7,3 +7,4 @@ user_id, user_name, course_id, state
 6, "Dusti Rogers", 9, active
 A, "Jim Rogers", 3, active
 7, "Ross Geller", 3, active
+8, "Chandler Bing", X, active
