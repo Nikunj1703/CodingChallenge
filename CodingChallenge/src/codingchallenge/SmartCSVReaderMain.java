@@ -65,7 +65,7 @@ public class SmartCSVReaderMain {
         * @param recordHash
         * @return 
         */
-       public void readCSV(String myFile, boolean isStudentCSV, HashMap<String, ?> recordHash){
+       public int readCSV(String myFile, boolean isStudentCSV, HashMap<String, ?> recordHash){
         //CSV file header
         //findCSVHeaderInformation handles the situation whenever CSV file with random column order is given as an input
         final String [] FILE_HEADER = findCSVHeaderInformation(myFile);
@@ -76,6 +76,7 @@ public class SmartCSVReaderMain {
         final String COURSE_NAME = "course_name";
         
         boolean isCSVValidFormat = false;
+        int numOfRecords = 0;
         FileReader fileReader = null;
         CSVParser csvFileParser = null;
         
@@ -98,6 +99,7 @@ public class SmartCSVReaderMain {
                                                         record.get(COURSE_ID).toString(),
                                                         record.get(STATE).toString()), 
                                                         studentTempHash);
+                        numOfRecords++;
                     }
                 }
             }else{   //If Course CSV then check format and built the Course HashMap
@@ -113,6 +115,7 @@ public class SmartCSVReaderMain {
                                                         record.get(COURSE_NAME).toString(),
                                                         record.get(STATE).toString()), 
                                                         courseTempHash);
+                        numOfRecords++;
                     }
                 }
             }
@@ -120,7 +123,8 @@ public class SmartCSVReaderMain {
             Logger.getLogger(SmartCSVReaderMain.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(SmartCSVReaderMain.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }  
+        return numOfRecords;
     }
        
     
@@ -130,7 +134,7 @@ public class SmartCSVReaderMain {
      * @param isStudentCSV
      * @return 
      */
-    private boolean csvFormatChecker(CSVRecord header, boolean isStudentCSV) {
+    public boolean csvFormatChecker(CSVRecord header, boolean isStudentCSV) {
         if(isStudentCSV){
             if(header.get("user_id").toString().trim().equals("user_id") &&
                     header.get("user_name").toString().trim().equals("user_name") &&
@@ -155,26 +159,30 @@ public class SmartCSVReaderMain {
      * This method Store Student Object in HashMap. user_id is Key and Student Object is Value
      * @param student
      * @param recordHash 
+     * @return 
      */
-    private void storeInStudentHashMap(Student student, HashMap<String, Student> recordHash) {
+    public int storeInStudentHashMap(Student student, HashMap<String, Student> recordHash) {
         if(!recordHash.containsKey(student.getUser_id())){
             recordHash.put(student.getUser_id(), student);
         }
         else
             recordHash.replace(student.getUser_id(), student);
+        return recordHash.size();
     }
 
     /**
-     * * This method Store Course Object in HashMap. course_id is Key and Course Object is Value
+     * This method Store Course Object in HashMap. course_id is Key and Course Object is Value
      * @param course
-     * @param recordHash 
+     * @param recordHash
+     * @return 
      */
-    private void storeInCourseHashMap(Course course, HashMap<String, Course> recordHash) {
+    public int storeInCourseHashMap(Course course, HashMap<String, Course> recordHash) {
         if(!recordHash.containsKey(course.getCourse_id())){
             recordHash.put(course.getCourse_id(), course);
         }
         else
             recordHash.replace(course.getCourse_id(), course); 
+        return recordHash.size();
     }
     
         /**
