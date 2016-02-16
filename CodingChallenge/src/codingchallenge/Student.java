@@ -32,7 +32,7 @@ public class Student {
 
     /**
      * 
-     * @return user_id
+     * @return 
      */
     public String getUser_id() {
         return user_id;
@@ -48,7 +48,7 @@ public class Student {
 
     /**
      * 
-     * @return user_name
+     * @return 
      */
     public String getUser_name() {
         return user_name;
@@ -64,7 +64,7 @@ public class Student {
 
     /**
      * 
-     * @return course_id
+     * @return 
      */
     public String getCourse_id() {
         return course_id;
@@ -80,7 +80,7 @@ public class Student {
 
     /**
      * 
-     * @return state
+     * @return 
      */
     public String getState() {
         return state;
